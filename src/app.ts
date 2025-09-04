@@ -1,29 +1,42 @@
+import { errors } from 'celebrate';
 import 'dotenv/config';
-import express, { Response, NextFunction } from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import { DATABASE_URL, SERVER_PORT } from './shared/env';
-import { AuthorizedRequest } from './shared/types/authorized-request';
+import {
+  validateLoginSchema,
+  validateCreateUserSchema,
+} from './shared/validators/request-validators';
 import { usersRouter } from './routes/users';
 import { cardsRouter } from './routes/cards';
 import { notFoundRouter } from './routes/not-founded';
+import { createUser, login } from './controllers/users';
+import { authMiddleware } from './middlewares/auth';
+import { centralizedErrorHandler } from './middlewares/centralized-error-handler';
+import { requestLogger, errorLogger } from './middlewares/logger';
 
-mongoose.set('strictQuery', false);
-mongoose.connect(DATABASE_URL);
+mongoose.connect(DATABASE_URL).catch((err) => {
+  console.error('Ошибка! Не удалось подключиться к серверу', err);
+});
 
 const app = express();
 app.use(express.json());
-app.use((req: AuthorizedRequest, res: Response, next: NextFunction) => {
-  req.user = {
-    _id: '8f2eae09b01ce7763d5a9b55',
-  };
 
-  next();
-});
+app.use(requestLogger);
 
-app.use(usersRouter);
-app.use(cardsRouter);
+app.post('/signin', validateLoginSchema, login);
+app.post('/signup', validateCreateUserSchema, createUser);
+
+app.use('/users', authMiddleware, usersRouter);
+app.use('/cards', authMiddleware, cardsRouter);
+
 app.use(notFoundRouter);
 
+app.use(errorLogger);
+app.use(errors());
+
+app.use(centralizedErrorHandler);
+
 app.listen(SERVER_PORT, () => {
-  console.log(`Приложение запущено на порту ${SERVER_PORT}`);
+  console.log(`Приложение успешно запущено! Порт - ${SERVER_PORT}`);
 });

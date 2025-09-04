@@ -2,15 +2,20 @@ import express from 'express';
 import {
   getUsers,
   getUser,
-  createUser,
   updateUserAvatar,
   updateUserProfile,
+  getUserMe,
 } from '../controllers/users';
+import {
+  validateAvatarUpdateSchema,
+  validateUpdateUserProfileSchema,
+  validateUserIdSchema,
+} from '../shared/validators/request-validators';
 
 export const usersRouter = express.Router();
 
-usersRouter.get('/users', getUsers);
-usersRouter.get('/users/:userId', getUser);
-usersRouter.post('/users', createUser);
-usersRouter.patch('/users/me', updateUserProfile);
-usersRouter.patch('/users/me/avatar', updateUserAvatar);
+usersRouter.get('/', getUsers);
+usersRouter.get('/me', getUserMe);
+usersRouter.patch('/me', validateUpdateUserProfileSchema, updateUserProfile);
+usersRouter.patch('/me/avatar', validateAvatarUpdateSchema, updateUserAvatar);
+usersRouter.get('/:userId', validateUserIdSchema, getUser);
