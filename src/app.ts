@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'dotenv/config';
 import express, { Response, NextFunction } from 'express';
 import mongoose from 'mongoose';

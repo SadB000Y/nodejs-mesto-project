@@ -22,7 +22,7 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(httpCodeResponseName.badRequest).send({
-        message: 'Пользователь с указанным _id не найден',
+        message: 'Ошибка! Пользователь с указанным _id не найден',
       });
     }
 
@@ -30,7 +30,7 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(httpCodeResponseName.notFound).send({
-        message: 'Пользователь не найден',
+        message: 'Ошибка! Пользователь не найден',
       });
     }
 
@@ -51,7 +51,7 @@ export const createUser = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       return res.status(httpCodeResponseName.badRequest).send({
-        message: `Переданы некорректные данные при создании пользователя. \n ${error.message}`,
+        message: `Ошибка! Переданы некорректные данные при создании пользователя. \n ${error.message}`,
       });
     }
 

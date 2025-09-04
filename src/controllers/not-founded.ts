@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-// shared
 import { httpCodeResponseName } from '../shared/http-code-response-name';
 import { errorMessages } from '../shared/error-messages';
 
