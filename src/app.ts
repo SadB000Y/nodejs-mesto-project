@@ -1,6 +1,7 @@
 import { errors } from 'celebrate';
 import 'dotenv/config';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import { DATABASE_URL, SERVER_PORT } from './shared/env';
 import {
@@ -21,6 +22,8 @@ mongoose.connect(DATABASE_URL).catch((err) => {
 
 const app = express();
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.use(requestLogger);
 

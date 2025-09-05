@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
-import { httpCodeResponseName } from '../shared/http-code-response-name';
-import { errorMessages } from '../shared/errors/error-messages';
+import { Request, Response, NextFunction } from 'express';
+import { NotFoundError } from '../shared/errors/not-found-error';
 
-export const notFounded = async (req: Request, res: Response) => {
-  res.status(httpCodeResponseName.notFound).send({ message: errorMessages.notFoundedError });
+export const notFounded = async (req: Request, res: Response, next: NextFunction) => {
+  next(new NotFoundError('Маршрут не найден'));
 };
